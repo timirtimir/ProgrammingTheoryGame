@@ -814,7 +814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9087bc1ef9efee0449fee83c4084d226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  explosionPrefab: {fileID: 4262680406267842227, guid: 65662b8a5ab0ab04688a0557da2b652a, type: 3}
+  explosionPrefab: {fileID: 0}
 --- !u!1 &1871134931
 GameObject:
   m_ObjectHideFlags: 0
