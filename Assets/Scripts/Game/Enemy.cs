@@ -3,7 +3,8 @@ using UnityEngine;
 // Inheritence
 public class Enemy : MonoBehaviour
 {
-    protected float BlastCoverageThershold;
+    protected int damageThershold;
+    protected int hitCount;
     [SerializeField] private GameObject dotPrefab;
     private BoxCollider boxC;
     private Bounds bounds;
@@ -17,6 +18,8 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        damageThershold = 30;
+        hitCount = 0;
         boxC = GetComponent<BoxCollider>();
         bounds = boxC.bounds;
         xTotal = bounds.max.x - bounds.min.x;
@@ -43,6 +46,15 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+    public void DotHit()
+    {
+        hitCount++;
+        Debug.Log(hitCount);
+        if(hitCount > damageThershold)
+        {
+            Destroy(gameObject);
+        }
     }
 }
