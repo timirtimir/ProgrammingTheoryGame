@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameManager.isGameActive) { 
         LookAround();
         if (controls.Player.CallExplosion.WasPressedThisFrame())
         {
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
         }
         ZoomInOut();
     }
+}
     private async void CreateExplosion()
     {
         if (ammo > 0 && !isShotCalled)
@@ -72,8 +74,8 @@ public class PlayerController : MonoBehaviour
     private void LookAround()
     {
         Vector2 look = controls.Player.LookAround.ReadValue<Vector2>() * 0.1f;
-        float xRotation = look.y;
-        float yRotation = look.x * -1;
+        float xRotation = look.y * -1;
+        float yRotation = look.x;
         eyes.transform.localEulerAngles += new Vector3 (xRotation, yRotation, 0);
     }
     private void ZoomInOut()

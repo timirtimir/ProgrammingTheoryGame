@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private TextMeshProUGUI gameWonText;
     private float timeLeftSeconds;
+    private float enemiesLeft = 3;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,12 +20,15 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(enemiesLeft <= 0)
+        {
+            GameWon();
+        }
         if(timeLeftSeconds <= 0)
         {
             GameOver();
         }
         UpdateTime();
-        
     }
     public void UpdateTime()
     {
@@ -43,5 +47,14 @@ public class GameManager : MonoBehaviour
     {
         gameOverText.gameObject.SetActive(true);
         isGameActive = false;
+    }
+    public void GameWon()
+    {
+        gameWonText.gameObject.SetActive(true);
+        isGameActive = true;
+    }
+    public void EnemyDied()
+    {
+        enemiesLeft -= 1;
     }
 }

@@ -11,16 +11,18 @@ public class Enemy : MonoBehaviour
     private float xCount = 5f;
     private float yCount = 5f;
     private float zCount = 4f;
-    //private int padding = 10;
     private float xTotal;
     private float yTotal;
     private float zTotal;
+    private GameManager gameManager;
+    protected float moveSpeed = 1;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected void Start()
     {
         damageThershold = 30;
         hitCount = 0;
         boxC = GetComponent<BoxCollider>();
+        gameManager = FindFirstObjectByType<GameManager>();
         bounds = boxC.bounds;
         xTotal = bounds.max.x - bounds.min.x;
         yTotal = bounds.max.y - bounds.min.y;
@@ -46,7 +48,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Move();
     }
     public void DotHit()
     {
@@ -54,7 +56,9 @@ public class Enemy : MonoBehaviour
         Debug.Log(hitCount);
         if(hitCount > damageThershold)
         {
+            gameManager.EnemyDied();
             Destroy(gameObject);
         }
     }
+    public virtual void Move() { }
 }
