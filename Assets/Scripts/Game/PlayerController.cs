@@ -5,12 +5,19 @@ public class PlayerController : MonoBehaviour
     private InputSystem_Actions controls;
     private Camera eyes;
     private LayerMask layerMask;
+    private bool isZoomed = true;
+    private float baseFOV;
+    private float zoomFOV = 15;
+    private float t = 1;
+    private float zoomSpeed = 3f;
+    private int ammo = 10;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         controls = new InputSystem_Actions();
         eyes = gameObject.GetComponentInChildren<Camera>();
         layerMask = LayerMask.GetMask("Default");
+        baseFOV = eyes.fieldOfView;
     }
     private void OnEnable()
     {
@@ -24,18 +31,28 @@ public class PlayerController : MonoBehaviour
         {
             CreateExplosion();
         }
-    }
-    private void CreateExplosion()
-    {
-        RaycastHit hit;
-        Ray ray = new Ray(eyes.transform.position, eyes.transform.forward);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        if (controls.Player.Zoom.WasPressedThisFrame())
         {
-            Debug.DrawRay(eyes.transform.position, eyes.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+            t = 0;
+            isZoomed = !isZoomed;
         }
-        Vector3 explosionLocation = hit.point;
-        Instantiate(explosionPrefab, explosionLocation, explosionPrefab.transform.rotation);
+        ZoomInOut();
+    }
+    private async void CreateExplosion()
+    {
+        if (ammo > 0)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(eyes.transform.position, eyes.transform.forward);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+            {
+                Vector3 explosionLocation = hit.point;
+                await Awaitable.WaitForSecondsAsync(2.0f);
+                Instantiate(explosionPrefab, explosionLocation, explosionPrefab.transform.rotation);
+                ammo--;
+            }
+        }
+
         
     }
     private void LookAround()
@@ -44,5 +61,17 @@ public class PlayerController : MonoBehaviour
         float xRotation = look.y;
         float yRotation = look.x * -1;
         eyes.transform.localEulerAngles += new Vector3 (xRotation, yRotation, 0);
+    }
+    private void ZoomInOut()
+    {
+        if (isZoomed)
+        {
+            eyes.fieldOfView = Mathf.Lerp(zoomFOV, baseFOV, t);
+        }
+        else {
+            eyes.fieldOfView = Mathf.Lerp(baseFOV, zoomFOV, t);
+        }
+        t += Time.deltaTime * zoomSpeed;
+
     }
 }
