@@ -1,23 +1,30 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] private TextMeshProUGUI ammoText;
     private InputSystem_Actions controls;
     private Camera eyes;
     private LayerMask layerMask;
     private bool isZoomed = true;
+    private bool isShotCalled = false;
     private float baseFOV;
     private float zoomFOV = 15;
     private float t = 1;
     private float zoomSpeed = 3f;
     private int ammo = 10;
+    private GameManager gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         controls = new InputSystem_Actions();
         eyes = gameObject.GetComponentInChildren<Camera>();
+        gameManager = FindFirstObjectByType<GameManager>();
         layerMask = LayerMask.GetMask("Default");
         baseFOV = eyes.fieldOfView;
+        ammoText.text = "Ammo: " + ammo;
     }
     private void OnEnable()
     {
@@ -40,16 +47,23 @@ public class PlayerController : MonoBehaviour
     }
     private async void CreateExplosion()
     {
-        if (ammo > 0)
+        if (ammo > 0 && !isShotCalled)
         {
             RaycastHit hit;
             Ray ray = new Ray(eyes.transform.position, eyes.transform.forward);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
+                isShotCalled = true;
                 Vector3 explosionLocation = hit.point;
                 await Awaitable.WaitForSecondsAsync(2.0f);
-                Instantiate(explosionPrefab, explosionLocation, explosionPrefab.transform.rotation);
                 ammo--;
+                ammoText.text = "Ammo: " + ammo;
+                Instantiate(explosionPrefab, explosionLocation, explosionPrefab.transform.rotation);
+                if (ammo <= 0)
+                {
+                    gameManager.GameOver();
+                }
+                isShotCalled = false;
             }
         }
 
