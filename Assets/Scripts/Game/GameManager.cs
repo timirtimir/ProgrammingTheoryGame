@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private TextMeshProUGUI gameWonText;
     private float timeLeftSeconds;
-    private float enemiesLeft = 3;
+    private float enemiesLeft = 3f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -51,10 +51,12 @@ public class GameManager : MonoBehaviour
     public void GameWon()
     {
         gameWonText.gameObject.SetActive(true);
-        isGameActive = true;
+        isGameActive = false;
     }
     public void EnemyDied()
     {
-        enemiesLeft -= 1;
+        Debug.Log(enemiesLeft);
+        enemiesLeft = enemiesLeft - 1;
+        Debug.Log(enemiesLeft);
     }
 }

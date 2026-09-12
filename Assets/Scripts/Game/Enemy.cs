@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     private float zTotal;
     private GameManager gameManager;
     protected float moveSpeed = 1;
+    private bool dead = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected void Start()
     {
@@ -52,10 +53,11 @@ public class Enemy : MonoBehaviour
     }
     public void DotHit()
     {
+        if (dead){ return; }
         hitCount++;
-        Debug.Log(hitCount);
         if(hitCount > damageThershold)
         {
+            dead = true;
             gameManager.EnemyDied();
             Destroy(gameObject);
         }

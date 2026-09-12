@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private float zoomFOV = 15;
     private float t = 1;
     private float zoomSpeed = 3f;
+    private float explosionSpeed = 0f;
     private int ammo = 10;
     private GameManager gameManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,20 +34,22 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameManager.isGameActive) { 
-        LookAround();
-        if (controls.Player.CallExplosion.WasPressedThisFrame())
-        {
-            CreateExplosion();
+        if (gameManager.isGameActive)
+        { 
+            LookAround();
+            if (controls.Player.CallExplosion.WasPressedThisFrame())
+            {
+                CreateExplosion();
+            }
+            if (controls.Player.Zoom.WasPressedThisFrame())
+            {
+                t = 0;
+                isZoomed = !isZoomed;
+            }
+            ZoomInOut();
         }
-        if (controls.Player.Zoom.WasPressedThisFrame())
-        {
-            t = 0;
-            isZoomed = !isZoomed;
-        }
-        ZoomInOut();
-    }
 }
+    // Creates an explosion on the ground where the player is looking
     private async void CreateExplosion()
     {
         if (ammo > 0 && !isShotCalled)
@@ -57,7 +60,7 @@ public class PlayerController : MonoBehaviour
             {
                 isShotCalled = true;
                 Vector3 explosionLocation = hit.point;
-                await Awaitable.WaitForSecondsAsync(2.0f);
+                await Awaitable.WaitForSecondsAsync(explosionSpeed);
                 ammo--;
                 ammoText.text = "Ammo: " + ammo;
                 Instantiate(explosionPrefab, explosionLocation, explosionPrefab.transform.rotation);
@@ -71,6 +74,8 @@ public class PlayerController : MonoBehaviour
 
         
     }
+    // Abstraction
+    // Allows the player to look around
     private void LookAround()
     {
         Vector2 look = controls.Player.LookAround.ReadValue<Vector2>() * 0.1f;
@@ -78,6 +83,7 @@ public class PlayerController : MonoBehaviour
         float yRotation = look.x;
         eyes.transform.localEulerAngles += new Vector3 (xRotation, yRotation, 0);
     }
+    // Zooms in if zoomed out and vice versa
     private void ZoomInOut()
     {
         if (isZoomed)

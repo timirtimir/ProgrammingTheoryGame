@@ -3,9 +3,9 @@ using UnityEngine;
 public class Explosion : MonoBehaviour
 {
     private float startSize = 0.1f;
-    private float endSize = 2f;
+    private float endSize = 3f;
     private float t = 0;
-    private float expandSpeed = 10;
+    private float expandSpeed = 8;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
