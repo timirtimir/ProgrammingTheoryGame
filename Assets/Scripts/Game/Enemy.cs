@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     private GameManager gameManager;
     protected float moveSpeed = 1;
     private bool dead = false;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Initalises the enemy and creates the dots
     protected void Start()
     {
         damageThershold = 30;
@@ -25,14 +25,25 @@ public class Enemy : MonoBehaviour
         boxC = GetComponent<BoxCollider>();
         gameManager = FindFirstObjectByType<GameManager>();
         bounds = boxC.bounds;
+        CreateDots();
+    }
+
+    // Moves the enemy
+    void Update()
+    {
+        Move();
+    }
+    // Creates 100 dots within the enemy as a way of checking if the enemy took a big enough damage
+    private void CreateDots()
+    {
         xTotal = bounds.max.x - bounds.min.x;
         yTotal = bounds.max.y - bounds.min.y;
         zTotal = bounds.max.z - bounds.min.z;
-        for (int x=0; x<xCount; x++)
+        for (int x = 0; x < xCount; x++)
         {
-            for(int y=0; y<yCount; y++)
+            for (int y = 0; y < yCount; y++)
             {
-                for(int z=0; z<zCount; z++)
+                for (int z = 0; z < zCount; z++)
                 {
                     float xPos = (x / (xCount - 1f)) * xTotal + bounds.min.x;
                     float yPos = (y / (yCount - 1f)) * yTotal + bounds.min.y;
@@ -45,12 +56,7 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Move();
-    }
+    // Handles a dot being hit and destroys the enemy if enough dots are destroyed
     public void DotHit()
     {
         if (dead){ return; }
@@ -62,5 +68,6 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    
     public virtual void Move() { }
 }

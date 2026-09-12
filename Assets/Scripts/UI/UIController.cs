@@ -1,10 +1,10 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class UIController : MonoBehaviour
 {
     private InputSystem_Actions controls;
     [SerializeField] private GameObject tutorialPanel;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Awake()
     {
         controls = new InputSystem_Actions();
@@ -13,7 +13,11 @@ public class UIController : MonoBehaviour
     {
         controls.UI.Enable();
     }
-    // Update is called once per frame
+    private void OnDisable()
+    {
+        controls.UI.Disable();
+    }
+    // Handles the input for the tutorial screen
     void Update()
     {
         if (controls.UI.TutorialToggle.WasPressedThisFrame())
@@ -21,6 +25,7 @@ public class UIController : MonoBehaviour
             ToggleTutorial();
         }
     }
+    // Toggles the tutorial screen
     private void ToggleTutorial()
     {
         if (tutorialPanel.activeSelf)
@@ -31,5 +36,16 @@ public class UIController : MonoBehaviour
         {
             tutorialPanel.SetActive(true);
         }
+    }
+    // Re-loads the game scene
+    public void Restart()
+    {
+        SceneManager.LoadScene("Game");
+    }
+    // Loads the main menu scene
+    public void MainMenu()
+    {
+        SceneManager.UnloadScene("Game");
+        SceneManager.LoadScene("TitleScreen");
     }
 }

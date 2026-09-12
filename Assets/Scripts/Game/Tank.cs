@@ -1,19 +1,20 @@
 using UnityEngine;
 
+// Inheritance
 public class Tank : Enemy
 {
     private float zBound = 3f;
-    private float xBound = 3f;
     private float xDirection = 0;
     private float zDirection = 1;
     private float rotationSpeed = 720;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Initalises the enemy using the enemy class constructor
     void Start()
     {
         base.Start();
         moveSpeed = 2;
     }
     // Polymorphism
+    // Moves the tank in a triangle
     public override void Move()
     {
         HandleMovement();
@@ -24,6 +25,7 @@ public class Tank : Enemy
         HandleLookDirection(movement);
             
     }
+    // Handles the movement by changing the tanks direction
     public void HandleMovement()
     {
 
@@ -51,6 +53,7 @@ public class Tank : Enemy
             }
         }
     }
+    // Handles the direction looked at by the tank using the movement of the tank
     public void HandleLookDirection(Vector3 movement)
     {
         if (movement != Vector3.zero)

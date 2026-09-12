@@ -3,21 +3,20 @@ using UnityEngine.UI;
 using TMPro;
 public class GameManager : MonoBehaviour
 {
-    public bool isGameActive;
+    private bool isGameActive;
     [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private TextMeshProUGUI gameWonText;
+    [SerializeField] private GameObject endButtons;
     private float timeLeftSeconds;
     private float enemiesLeft = 3f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Starts the game
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
         StartGame();
     }
 
-    // Update is called once per frame
+    // Checks if the game is over and updates time
     void Update()
     {
         if(enemiesLeft <= 0)
@@ -30,6 +29,7 @@ public class GameManager : MonoBehaviour
         }
         UpdateTime();
     }
+    // Simple timer counting down
     public void UpdateTime()
     {
         if (isGameActive)
@@ -38,25 +38,58 @@ public class GameManager : MonoBehaviour
             timeLeftSeconds -= Time.deltaTime;
         }
     }
+    // Locks the mouse and starts the game
     public void StartGame()
     {
+        DeactivateMouse();
         isGameActive = true;
         timeLeftSeconds = 60;
     }
+    // Displays game over message
     public void GameOver()
     {
         gameOverText.gameObject.SetActive(true);
-        isGameActive = false;
+        GameEnd();
     }
+    // Displays game won message
     public void GameWon()
     {
         gameWonText.gameObject.SetActive(true);
-        isGameActive = false;
+        GameEnd();
     }
+    // Abstraction
+    // Handles game ending both victory or loss
+    private void GameEnd()
+    {
+        endButtons.SetActive(true);
+        isGameActive = false;
+        ActivateMouse();
+    }
+    // Handles an enemy dying
     public void EnemyDied()
     {
-        Debug.Log(enemiesLeft);
         enemiesLeft = enemiesLeft - 1;
-        Debug.Log(enemiesLeft);
     }
+    // Activates the mouse
+    private void ActivateMouse()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }  
+    // Deactivates the mouse
+    private void DeactivateMouse() { 
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    // Encapsulation
+    // Returns the game state
+    public bool GetGameState()
+    {
+        return isGameActive;
+    }
+    
+
 }
+

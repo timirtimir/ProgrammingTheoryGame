@@ -14,10 +14,11 @@ public class PlayerController : MonoBehaviour
     private float zoomFOV = 15;
     private float t = 1;
     private float zoomSpeed = 3f;
-    private float explosionSpeed = 0f;
+    private float explosionSpeed = 1f;
     private int ammo = 10;
     private GameManager gameManager;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
+    // Initialises the variables
     void Awake()
     {
         controls = new InputSystem_Actions();
@@ -31,10 +32,14 @@ public class PlayerController : MonoBehaviour
     {
         controls.Player.Enable();
     }
-    // Update is called once per frame
+    private void OnDisable()
+    {
+        controls.Player.Disable();
+    }
+    // Allows the player control as long as the game is active
     void Update()
     {
-        if (gameManager.isGameActive)
+        if (gameManager.GetGameState())
         { 
             LookAround();
             if (controls.Player.CallExplosion.WasPressedThisFrame())
